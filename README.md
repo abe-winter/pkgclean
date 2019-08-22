@@ -4,6 +4,15 @@ deltree is a python command that finds auto-generated directories under a root t
 
 If you have a dev laptop with a full disk and lots of old build folders lying around, this is useful (or if you're about to do a backup).
 
+## Installation & example runs
+
+```bash
+pip install git+https://github.com/abe-winter/pkgclean.git
+pkgclean --help
+pkgclean --all ~/2019
+pkgclean --all --delete ~/2019
+```
+
 ## Things it can find / delete
 
 * .direnv directories

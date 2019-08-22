@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 "entry-point for deltree"
 
-import os, argparse
+import os, argparse, itertools
 
 PACKAGE_DIRS = {
   'direnv': '.direnv',
@@ -27,6 +27,17 @@ class Walker:
     self.ignore.extend(args.ignore or [])
     return self
 
+  def walk(self, dirpath, dirnames, filenames):
+    "callback for os.walk"
+    to_remove = []
+    for dirname in dirnames:
+      if dirname in self.detect:
+        to_remove.append(dirname)
+    for remove in to_remove:
+      dirnames.remove(remove) # this prunes the walk
+      self.found.append(os.path.join(dirpath, remove))
+
+
 def make_parser():
   parser = argparse.ArgumentParser(description="find (or delete) disposable package directories to save space")
   parser.add_argument('--delete', action='store_true', help="delete the found stuff instead of just listing it")
@@ -37,13 +48,19 @@ def make_parser():
   parser.add_argument('--all', action='store_true', help='find everything we know how')
   for k in sorted(PACKAGE_DIRS):
     parser.add_argument('--' + k, action='store_true', help="include %s" % PACKAGE_DIRS[k])
+  parser.add_argument('rootpath', nargs='?', default='.', help="look at dirs under this")
   return parser
 
 def main():
   args = make_parser().parse_args()
   if args.invert:
     raise NotImplementedError("invert mode doesn't work yet")
+  if args.ignore:
+    raise NotImplementedError("abs/relative ignores not working yet")
   walker = Walker().register_plugins(args)
-  raise NotImplementedError('todo walk')
+  for tup in os.walk(args.rootpath):
+    walker.walk(*tup)
+  for found in walker.found:
+    print(found)
 
 if __name__ == '__main__': main()
