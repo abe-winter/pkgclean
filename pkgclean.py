@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 "entry-point for deltree"
 
-import os, argparse, itertools
+import os, argparse, itertools, shutil
 
 PACKAGE_DIRS = {
   'direnv': '.direnv',
@@ -62,5 +62,8 @@ def main():
     walker.walk(*tup)
   for found in walker.found:
     print(found)
+  if args.delete:
+    for found in walker.found:
+      shutil.rmtree(found)
 
 if __name__ == '__main__': main()

@@ -8,8 +8,11 @@ If you have a dev laptop with a full disk and lots of old build folders lying ar
 
 ```bash
 pip install git+https://github.com/abe-winter/pkgclean.git
+# show help
 pkgclean --help
+# show matching paths under ~/2019
 pkgclean --all ~/2019
+# show & delete matching paths under ~/2019
 pkgclean --all --delete ~/2019
 ```
 
